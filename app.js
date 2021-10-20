@@ -1,10 +1,15 @@
-const express = require('express')
-const documentRouter = require('./routes/documentRoutes')
-const app = express()
+const path = require('path');
+const express = require('express');
+const documentRouter = require('./routes/documentRoutes');
+const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
-app.use('/api/v1/documents',documentRouter)
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, `public`)));
 
-module.exports = app
+app.use('/api/v1/documents', documentRouter);
+
+module.exports = app;
