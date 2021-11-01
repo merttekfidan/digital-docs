@@ -47,3 +47,20 @@ exports.deleteDocument = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+
+exports.filterDate = catchAsync(async (req, res, next) => {
+  const documents = await Document.aggregate([
+    {
+      $match: {
+        createdAt: {
+          $gte: new Date(req.query.startDate),
+          $lte: new Date(req.query.endDate),
+        },
+      },
+    },
+  ]);
+  res.status(200).json({
+    status: 'success',
+    data: { data: documents },
+  });
+});
