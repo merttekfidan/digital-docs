@@ -1,9 +1,11 @@
 const path = require('path');
 const express = require('express');
+const cors = require('cors');
 const documentRouter = require('./routes/documentRoutes');
 const viewsRouter = require('./routes/viewsRoutes');
 const app = express();
 
+app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 

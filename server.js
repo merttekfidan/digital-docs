@@ -19,7 +19,7 @@ mongoose
 
 
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 const server = app.listen(port,()=>{
-    console.log('App is on, 3000 PORT')
+    console.log('App is on, 8000 PORT')
 })
