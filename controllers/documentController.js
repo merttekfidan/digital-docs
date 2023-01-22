@@ -1,47 +1,68 @@
+const multer = require('multer');
+var path = require('path');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 const Document = require('./../models/documentModel');
 
-
-
-exports.uploadDocImages = upload.fields([
-  { name: 'imageCover', maxCount: 1 },
-  { name: 'images', maxCount: 3 },
-]);
-
-exports.resizeDocImages = catchAsync(async (req, res, next) => {
-  //console.log(req.files);
-  if (!req.files.imageCover || !req.files.images) return next();
-
-  // 1) Cover image
-  req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
-  await sharp(req.files.imageCover[0].buffer)
-    .resize(2000, 1333)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toFile(`public/img/docs/${req.body.imageCover}`);
-
-  // 2) Images
-  req.body.images = [];
-  await Promise.all(
-    req.files.images.map(async (file, i) => {
-      const filename = `tour-${req.params.id}-${Date.now()}-${
-        i + 1
-      }-cover.jpeg`;
-      await sharp(file.buffer)
-        .resize(2000, 1333)
-        .toFormat('jpeg')
-        .jpeg({ quality: 90 })
-        .toFile(`public/img/docs/${filename}`);
-      req.body.images.push(filename);
-    })
-  );
-  next();
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads');
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = `${Date.now()}-${path.extname(file.originalname)}`;
+    //dosya uzantısını otomatik çek
+    cb(null, file.fieldname + '-' + uniqueSuffix);
+  },
 });
 
+const upload = multer({ storage: storage });
 
+//  req.files['avatar'][0] -> File
+//  req.files['gallery'] -> Array
+
+exports.uploadFiles = upload.fields([
+  { name: 'images', maxCount: 10 },
+  { name: 'thumbnailUrl', maxCount: 1 },
+  { name: 'pdfUrl', maxCount: 10 },
+]);
+
+exports.uploadDocImages = catchAsync(async (req, res, next) => {
+  req.body.images = [];
+  req.body.thumbnailUrl = [];
+  req.body.pdfUrl = [];
+
+  // images
+  if (req.files.images) {
+    req.files['images'].forEach((element) => {
+      req.body.images.push(element.path);
+    });
+  }
+  if (req.files.thumbnailUrl) {
+    req.files['thumbnailUrl'].forEach((element) => {
+      req.body.thumbnailUrl.push(element.path);
+    });
+  }
+  if (req.files.pdfUrl) {
+    req.files['pdfUrl'].forEach((element) => {
+      req.body.pdfUrl.push(element.path);
+    });
+  }
+
+  // thumbnailUrl must be written???
+
+  // pdfUrl must be written???
+
+  req.body.images.forEach((e) => console.log(e));
+  console.log('req.body.images : ', req.body.images);
+  console.log('req.body.pdf : ', req.body.pdfUrl);
+  console.log('req.body.thumbnailUrl : ', req.body.thumbnailUrl);
+  res.status(201).json({
+    status: 'success',
+  });
+});
 
 exports.createDocument = catchAsync(async (req, res, next) => {
+  //Validations should be added
   const documents = await Document.create(req.body);
   res.status(201).json({
     status: 'success',

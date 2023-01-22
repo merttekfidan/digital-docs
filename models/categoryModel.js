@@ -7,7 +7,7 @@ const categorySchema = mongoose.Schema({
   customName: {
     type: String,
   },
-  images: [String]
+  images: [String],
 });
 
 const Category = mongoose.model('Category', categorySchema);

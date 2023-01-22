@@ -31,25 +31,25 @@ const docsSchema = mongoose.Schema({
   sentAt: {
     type: Date,
   },
-  expiresAt:Date,
+  expiresAt: Date,
   categoryId: {
     type: mongoose.Schema.ObjectId,
     ref: 'Category',
   },
   thumbnailUrl: String,
-  images:[String],
-  comment:String,
+  images: [String],
+  comment: String,
   originalLocation: {
-    type:String,
+    type: String,
   },
   sentTo: {
     type: String,
   },
   pdfUrl: [String],
   type: String,
-  keywords:[String],
-  title:String,
-  permission:{
+  keywords: [String],
+  title: String,
+  permission: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
   },
@@ -57,8 +57,6 @@ const docsSchema = mongoose.Schema({
 
 const Document = mongoose.model('Document', docsSchema);
 module.exports = Document;
-
-
 
 /*
         Example Data
