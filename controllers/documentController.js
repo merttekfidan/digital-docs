@@ -80,7 +80,8 @@ exports.getAllDocuments = catchAsync(async (req, res, next) => {
 
 exports.getOneDocument = catchAsync(async (req, res, next) => {
   const document = await Document.findById(req.params.id);
-  if (!document) return next(new AppError('No document found with that ID!', 404));
+  if (!document)
+    return next(new AppError('No document found with that ID!', 404));
   res.status(200).json({
     status: 'success',
     data: { data: document },
@@ -92,7 +93,8 @@ exports.updateDocument = catchAsync(async (req, res, next) => {
     runValidators: true,
     new: true,
   });
-  if (!documents) return next(new AppError('No document found with that ID!', 404));
+  if (!documents)
+    return next(new AppError('No document found with that ID!', 404));
   res.status(200).json({
     status: 'success',
     data: { data: documents },
@@ -101,7 +103,8 @@ exports.updateDocument = catchAsync(async (req, res, next) => {
 
 exports.deleteDocument = catchAsync(async (req, res, next) => {
   const documents = await Document.findByIdAndDelete(req.params.id);
-  if (!documents) return next(new AppError('No document found with that ID!', 404));
+  if (!documents)
+    return next(new AppError('No document found with that ID!', 404));
   res.status(204).json({
     status: 'success',
     data: null,
